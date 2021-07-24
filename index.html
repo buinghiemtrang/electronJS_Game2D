@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+        margin :0 ;
+        overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <script src="node_modules/phaser/dist/phaser.min.js"></script>
+    <script>
+        let config = {
+            type: Phaser.AUTO,
+            width:800, height:600, backgroundColor: "#afa",
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            },
+            physics: {
+                default:"arcade",
+                arcade: {
+                    gravity: {y:200}
+                }
+            }
+        }
+        var game = new Phaser.Game(config)
+        let ship, cursors
+        function preload(){
+            this.load.setBaseURL('.')
+            this.load.image('background', 'assets/traidat.jpg');
+            this.load.image('mario', 'assets/chos.png');
+            this.load.image('red', 'assets/red.png');
+          
+        };
+        function create(){
+            // this.add.image(400,300,'sky')
+            // let particles = this.add.particles('red')
+            // let emitter=particles.createEmitter({
+            //      speed: 100,slace:{start: 0,end:0},
+            //      blendMode: 'ADD'
+            //   })
+            // let logo = this.physics.add.image(400,100, 'logo')
+            //     logo.setVelocity(100,200)
+            //     logo.setBounce(1,1)
+            //     logo.setCollideWorldBounds(true)
+            //     emitter.startFollow(logo)
+            let image = this.add.image(
+                this.cameras.main.width / 2,
+                this.cameras.main.height / 2,
+                'background'
+            );
+            let X = this.cameras.main.width / image.width;
+            let Y = this.cameras.main.height / image.height;
+            let scale = Math.max(X, Y);
+                image.setScale(scale).setScrollFactor(0);
+
+            let particles = this.add.particles('red')
+            let emitter = particles.createEmitter({
+                speed: 150,
+                slace:{
+                    start: 1,
+                    end:0
+                },
+                blendMode: 'ADD'
+            })
+            ship = this.add.sprite(100,100,'mario')
+            ship.setScale(0.1,0.1)
+            emitter.startFollow(ship)
+            cursors= this.input.keyboard.createCursorKeys()
+        }
+
+        function update() {
+            if (cursors.right.isDown){
+            ship.x = ship.x + 10
+            ship.flipX = false
+            if (ship.x >= 800)
+                ship.x = 0
+            }
+            else if (cursors.left.isDown){
+             ship.x = ship.x - 10
+             ship.flipX = true
+            }
+            else if (cursors.up.isDown) {
+                ship.y = ship.y - 10
+            }
+            else if (cursors.down.isDown){
+                ship.y = ship.y + 10
+                if (ship.y >= 600)
+                ship.y = 0
+            }
+        }
+    </script>
+</body>
+</html>
